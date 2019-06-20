@@ -36,3 +36,15 @@ jar {
     }
     archiveName 'qupath-extension-binarymask.jar'
 }
+
+//create a single Jar with all dependencies
+task fatJar(type: Jar) {
+    manifest {
+        attributes 'Implementation-Title': 'Binary mask for QuPath',
+                'Implementation-Version': 0.1,
+                'Main-Class': 'qupath.extensions.masker.BinaryMaskExtension'
+    }
+    baseName = project.name + '-all'
+    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+    with jar
+}

@@ -32,16 +32,7 @@ public class BinaryMaskCreator implements PathCommand {
 
     @Override
     public void run() {
-        try {
-            if (dialog == null) {
-                dialog = new Stage();
-                if (quPathGUI != null)
-                    dialog.initOwner(quPathGUI.getStage());
-                dialog.setTitle(name);
-            }
-        } catch (NoClassDefFoundError e) {
-            dialog = null;
-        }
+        createBinaryMask();
     }
 
     private void createBinaryMask() {
@@ -56,20 +47,14 @@ public class BinaryMaskCreator implements PathCommand {
         String pathOutput = QPEx.buildFilePath(QPEx.PROJECT_BASE_DIR, "masks");
         QPEx.mkdirs(pathOutput);
 
-
-        String imageExportType = "PNG";
-
         annotations.forEach(annotation ->
-                saveImageAndMask(pathOutput, server, annotation, downSample, imageExportType)
+                saveMask(pathOutput, server, annotation, downSample)
         );
-
-        System.out.println("Done!");
 
     }
 
-    private void saveImageAndMask(String pathOutput, ImageServer server, PathObject pathObject,
-                                  double downsample, String
-                                          imageExportType) {
+    private void saveMask(String pathOutput, ImageServer server, PathObject pathObject,
+                          double downSample) {
         ROI roi = pathObject.getROI();
         PathClass pathClass = pathObject.getPathClass();
         String classificationName = pathClass == null ? "None" : pathClass.toString();
@@ -78,7 +63,7 @@ public class BinaryMaskCreator implements PathCommand {
             return;
         }
 
-        RegionRequest region = RegionRequest.createInstance(server.getPath(), downsample, roi);
+        RegionRequest region = RegionRequest.createInstance(server.getPath(), downSample, roi);
 
         String name = String.format("%s_%s_(%.2f,%d,%d,%d,%d)",
                 server.getShortServerName(),
@@ -96,19 +81,10 @@ public class BinaryMaskCreator implements PathCommand {
         BufferedImage imgMask = new BufferedImage(img.getWidth(), img.getHeight(), BufferedImage.TYPE_BYTE_GRAY);
         Graphics2D g2d = imgMask.createGraphics();
         g2d.setColor(Color.WHITE);
-        g2d.scale(1.0 / downsample, 1.0 / downsample);
+        g2d.scale(1.0 / downSample, 1.0 / downSample);
         g2d.translate(-region.getX(), -region.getY());
         g2d.fill(shape);
         g2d.dispose();
-
-        if (imageExportType != null) {
-            File fileImage = new File(pathOutput, name + '.' + imageExportType.toLowerCase());
-            try {
-                ImageIO.write(img, imageExportType, fileImage);
-            } catch (Exception e) {
-                System.out.println("Couldn't write fileImage.");
-            }
-        }
 
         File fileMask = new File(pathOutput, name + "-mask.png");
         try {
