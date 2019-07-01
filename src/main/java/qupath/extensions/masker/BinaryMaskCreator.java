@@ -22,14 +22,6 @@ import java.util.stream.Collectors;
 
 public class BinaryMaskCreator implements PathCommand {
 
-    final private static String name = "Create binary masks";
-    private QuPathGUI quPathGUI;
-    private Stage dialog;
-
-    public BinaryMaskCreator(final QuPathGUI quPathGUI) {
-        this.quPathGUI = quPathGUI;
-    }
-
     @Override
     public void run() {
         createBinaryMask();
@@ -43,7 +35,7 @@ public class BinaryMaskCreator implements PathCommand {
         List<PathObject> flattenedObjectList = hierarchy.getFlattenedObjectList(null);
         List<PathObject> annotations = flattenedObjectList.stream().filter(PathObject::isAnnotation).collect(Collectors.toList());
 
-        double downSample = 4.0;
+        double downSample = 8.0;
         String pathOutput = QPEx.buildFilePath(QPEx.PROJECT_BASE_DIR, "masks");
         QPEx.mkdirs(pathOutput);
 
