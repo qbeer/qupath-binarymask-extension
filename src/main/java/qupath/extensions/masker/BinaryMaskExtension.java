@@ -1,6 +1,9 @@
 package qupath.extensions.masker;
 
 import javafx.scene.control.Menu;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyCodeCombination;
+import javafx.scene.input.KeyCombination;
 import qupath.lib.gui.QuPathGUI;
 import qupath.lib.gui.extensions.QuPathExtension;
 
@@ -18,7 +21,8 @@ public class BinaryMaskExtension implements QuPathExtension {
         QuPathGUI.addMenuItems(binaryMaskMenu,
                 QuPathGUI.createCommandAction(
                         new DuplicateAnnotation(),
-                        "Duplicate selected annotation"));
+                        "Duplicate selected annotation", null,
+                        new KeyCodeCombination(KeyCode.D, KeyCombination.CONTROL_DOWN)));
     }
 
     @Override
