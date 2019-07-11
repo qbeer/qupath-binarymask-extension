@@ -3,12 +3,14 @@ package qupath.extensions.masker;
 import qupath.lib.gui.commands.interfaces.PathCommand;
 import qupath.lib.images.ImageData;
 import qupath.lib.images.servers.ImageServer;
+import qupath.lib.objects.PathAnnotationObject;
 import qupath.lib.objects.PathObject;
 import qupath.lib.objects.classes.PathClass;
 import qupath.lib.objects.hierarchy.PathObjectHierarchy;
 import qupath.lib.regions.RegionRequest;
 import qupath.lib.roi.PathROIToolsAwt;
 import qupath.lib.roi.interfaces.ROI;
+import qupath.lib.scripting.QP;
 import qupath.lib.scripting.QPEx;
 
 import javax.imageio.ImageIO;
@@ -18,6 +20,7 @@ import java.io.File;
 import java.sql.Timestamp;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 public class BinaryMaskCreator implements PathCommand {
@@ -26,8 +29,10 @@ public class BinaryMaskCreator implements PathCommand {
     public void run() {
         try {
             createBinaryMask();
+        } catch (IllegalArgumentException e) {
+            throw new IllegalArgumentException(e.getMessage());
         } catch (Exception e) {
-            throw new IllegalArgumentException("Please select an image!");
+            throw new IllegalArgumentException("Error while creating binary mask! Select an image if none is selected!");
         }
     }
 
@@ -38,6 +43,8 @@ public class BinaryMaskCreator implements PathCommand {
 
         List<PathObject> flattenedObjectList = hierarchy.getFlattenedObjectList(null);
         List<PathObject> annotations = flattenedObjectList.stream().filter(PathObject::isAnnotation).collect(Collectors.toList());
+
+        annotations.forEach(this::checkForNoneTypeAnnotation);
 
         String pathOutput = QPEx.buildFilePath(QPEx.PROJECT_BASE_DIR, "masks");
         String latestPath = QPEx.buildFilePath(QPEx.PROJECT_BASE_DIR, "masks/latest");
@@ -55,17 +62,18 @@ public class BinaryMaskCreator implements PathCommand {
 
     }
 
+    private void checkForNoneTypeAnnotation(PathObject annotation) {
+        if (Objects.isNull(annotation.getPathClass())) {
+            throw new IllegalArgumentException("There are annotations with no type!");
+        }
+    }
+
     private void saveMask(String pathOutput, String latestPath, ImageServer server, PathObject pathObject,
                           String timestamp) {
         ROI roi = pathObject.getROI();
-        PathClass pathClass = pathObject.getPathClass();
-        String classificationName = pathClass == null ? "None" : pathClass.toString();
+        String classificationName = pathObject.getPathClass().toString();
         if (roi == null) {
             return;
-        }
-
-        if (classificationName.equals("None")) {
-            throw new IllegalArgumentException("Warning! There are non-classified annotations!");
         }
 
         double downSample = adaptiveDownSampling(roi);
@@ -115,6 +123,9 @@ public class BinaryMaskCreator implements PathCommand {
     private void deleteCorrespondingFilesFromLatestDir(String imageName, String latestPath) {
         File dir = new File(latestPath);
         File[] matches = dir.listFiles((dir1, name) -> name.startsWith(imageName) && name.endsWith(".png"));
+        if (Objects.isNull(matches)) {
+            return;
+        }
         for (File match : matches) {
             if (!match.delete()) {
                 throw new UnsupportedOperationException("Couldn't delete corresponding files from masks/latest.");

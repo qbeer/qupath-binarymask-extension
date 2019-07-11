@@ -13,7 +13,7 @@ public class LockAnnotations implements PathCommand {
             PathObjectHierarchy hierarchy = QPEx.getCurrentImageData().getHierarchy();
             hierarchy.getFlattenedObjectList(null).stream().filter(PathObject::isAnnotation).forEach(annotation -> ((PathAnnotationObject) annotation).setLocked(true));
         } catch (Exception e) {
-            throw new IllegalArgumentException("Please select an image!");
+            throw new IllegalArgumentException("Error while locking annotations! Please select an image!");
         }
     }
 }
