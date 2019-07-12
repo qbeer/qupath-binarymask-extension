@@ -11,6 +11,7 @@ import qupath.lib.images.ImageData;
 import qupath.lib.images.servers.ImageServer;
 import qupath.lib.objects.PathAnnotationObject;
 import qupath.lib.objects.PathObject;
+import qupath.lib.objects.classes.PathClass;
 import qupath.lib.objects.classes.PathClassFactory;
 import qupath.lib.objects.hierarchy.PathObjectHierarchy;
 import qupath.lib.roi.interfaces.ROI;
@@ -20,10 +21,8 @@ import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 public class LoadAnnotations implements PathCommand {
     @Override
@@ -33,7 +32,7 @@ public class LoadAnnotations implements PathCommand {
         } catch (IllegalArgumentException e) {
             throw new IllegalArgumentException("Illegal argument exception : " + e.getMessage());
         } catch (Exception e) {
-            throw new IllegalArgumentException("Please select and image that has save masks!");
+            throw new IllegalArgumentException("Please select and image that has save masks!" + e.getMessage());
         }
     }
 
@@ -46,14 +45,14 @@ public class LoadAnnotations implements PathCommand {
         String masksPath = QPEx.buildFilePath(QPEx.PROJECT_BASE_DIR, "masks/latest");
         File directoryOfMasks = new File(masksPath);
 
-        if (Objects.isNull(directoryOfMasks.listFiles())) {
-            throw new IllegalArgumentException("No masks in latest directory for the image.");
+        if (Objects.isNull(directoryOfMasks.listFiles()) || directoryOfMasks.listFiles().length == 0) {
+            throw new IllegalArgumentException("No masks in latest directory for the image." + correspondingMaskName);
         }
 
         List<File> filteredFiles = new ArrayList<>();
         File[] files = Objects.nonNull(directoryOfMasks.listFiles()) ? directoryOfMasks.listFiles() : new File[]{};
         for (File file : files) {
-            if (file.isFile() && file.getName().contains(correspondingMaskName) && file
+            if (file.isFile() && file.getName().startsWith(correspondingMaskName) && file
                     .getName()
                     .endsWith("-mask.png")) {
                 filteredFiles.add(file);
@@ -62,12 +61,7 @@ public class LoadAnnotations implements PathCommand {
 
         List<PathObject> annotations = new ArrayList<>();
         for (File annotationMask : filteredFiles) {
-            try {
-                annotations.add(parseAnnotation(annotationMask, correspondingMaskName));
-            } catch (Exception e) {
-                throw new IllegalArgumentException("Cannot parse annotation from " +
-                        annotationMask.getName() + " : " + e.getLocalizedMessage());
-            }
+            annotations.add(parseAnnotation(annotationMask, correspondingMaskName));
         }
 
         hierarchy.addPathObjects(annotations, false);
@@ -75,7 +69,6 @@ public class LoadAnnotations implements PathCommand {
     }
 
     private PathObject parseAnnotation(File file, String imageName) {
-        // Read the image
         BufferedImage img;
         try {
             img = ImageIO.read(file);
@@ -83,34 +76,38 @@ public class LoadAnnotations implements PathCommand {
             throw new IllegalArgumentException("Could not read file : " + file.getName());
         }
 
-        // Split the file name into parts: [Image name, Classification, Region]
+        // Remove a "_" with the image name to not split
+        // an empty string for the first part.
         String[] parts = file.getName()
-                .replace(imageName, "")
+                .replace(imageName + "_", "")
                 .replace("-mask.png", "")
                 .split("_");
 
-
+        // Classification name
         String classificationString = parts[0];
 
+        // The format is (downSample, x, y, boundingWidth, boundingHeight)
         String regionString = parts[1].replace("(", "").replace(")", "");
-
         String[] regionParts = regionString.split(",");
-        double downsample = Double.parseDouble(regionParts[0]);
+
+        double downSample = Double.parseDouble(regionParts[0]);
         int x = Integer.parseInt(regionParts[1]);
         int y = Integer.parseInt(regionParts[2]);
 
-        // To create the ROI, travel into ImageJ
+        // ROI with ImageJ
         ByteProcessor bp = new ByteProcessor(img);
         bp.setThreshold(127.5, Double.MAX_VALUE, ImageProcessor.NO_LUT_UPDATE);
         Roi roiIJ = new ThresholdToSelection().convert(bp);
 
         Calibration cal = new Calibration();
-        cal.xOrigin = -x / downsample;
-        cal.yOrigin = -y / downsample;
-        ROI roi = ROIConverterIJ.convertToPathROI(roiIJ, cal, downsample, -1, 0, 0);
+        cal.xOrigin = -x / downSample;
+        cal.yOrigin = -y / downSample;
+        ROI roi = ROIConverterIJ.convertToPathROI(roiIJ, cal, downSample, -1, 0, 0);
 
-        // Create & return the object
-        return new PathAnnotationObject(roi, PathClassFactory.getPathClass(classificationString));
+        // Set the class name properly
+        PathClass pathClass = PathClassFactory.getPathClass(classificationString);
+
+        return new PathAnnotationObject(roi, pathClass);
     }
 
 }
