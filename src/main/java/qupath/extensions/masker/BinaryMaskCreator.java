@@ -100,7 +100,7 @@ public class BinaryMaskCreator implements PathCommand {
         g2d.fill(shape);
         g2d.dispose();
 
-        File fileMask = new File(pathOutput, name + "-mask-" + timestamp + "-.png");
+        File fileMask = new File(pathOutput, name + "-mask-" + timestamp + ".png");
         try {
             ImageIO.write(imgMask, "PNG", fileMask);
         } catch (Exception e) {
