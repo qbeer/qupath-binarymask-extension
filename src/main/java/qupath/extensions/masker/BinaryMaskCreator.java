@@ -56,7 +56,7 @@ public class BinaryMaskCreator implements PathCommand {
         deleteCorrespondingFilesFromLatestDir(server.getShortServerName(), latestPath);
 
         annotations.forEach(annotation ->
-                saveMask(pathOutput, latestPath, server, annotation, ts.toString())
+                saveMask(pathOutput, latestPath, server, annotation, String.valueOf(ts.getNanos()))
         );
 
     }
@@ -104,8 +104,7 @@ public class BinaryMaskCreator implements PathCommand {
         try {
             ImageIO.write(imgMask, "PNG", fileMask);
         } catch (Exception e) {
-            throw new UnsupportedOperationException("Couldn't write fileMask.\t" + e.getMessage() +
-                    pathOutput + name + timestamp +"\n"+ imgMask.toString() + "\n" +fileMask.toString());
+            throw new UnsupportedOperationException("Couldn't write fileMask." + name + "\t");
         }
 
         File currentMask = new File(latestPath, name + "-mask.png");
@@ -113,7 +112,7 @@ public class BinaryMaskCreator implements PathCommand {
             ImageIO.write(imgMask, "PNG", currentMask);
         } catch (Exception e) {
             throw new UnsupportedOperationException(
-                    "Couldn't write current mask to directory masks/latest.\t" + e.getMessage());
+                    "Couldn't write current mask to directory masks/latest.");
         }
 
 
