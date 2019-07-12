@@ -104,16 +104,15 @@ public class BinaryMaskCreator implements PathCommand {
         try {
             ImageIO.write(imgMask, "PNG", fileMask);
         } catch (Exception e) {
-            System.out.println("Couldn't write fileMask.");
-            throw new UnsupportedOperationException("Couldn't write fileMask.");
+            throw new UnsupportedOperationException("Couldn't write fileMask.\t" + e.getMessage());
         }
 
         File currentMask = new File(latestPath, name + "-mask.png");
         try {
             ImageIO.write(imgMask, "PNG", currentMask);
         } catch (Exception e) {
-            System.out.println("Couldn't write currentMask.");
-            throw new UnsupportedOperationException("Couldn't write current mask to directory masks/latest.");
+            throw new UnsupportedOperationException(
+                    "Couldn't write current mask to directory masks/latest.\t" + e.getMessage());
         }
 
 
