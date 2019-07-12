@@ -27,9 +27,8 @@ public class BinaryMaskExtension implements QuPathExtension {
 
         QuPathGUI.addMenuItems(binaryMaskMenu,
                 QuPathGUI.createCommandAction(
-                        new RemoveSmallNoneTypeAnnotations(),
-                        "Remove small, None type annotations", null,
-                        new KeyCodeCombination(KeyCode.R, KeyCombination.CONTROL_DOWN, KeyCombination.ALT_DOWN)));
+                        new LoadAnnotations(),
+                        "Load annotations"));
     }
 
     @Override
