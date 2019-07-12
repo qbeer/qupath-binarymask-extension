@@ -28,6 +28,8 @@ public class BinaryMaskCreator implements PathCommand {
             createBinaryMask();
         } catch (IllegalArgumentException e) {
             throw new IllegalArgumentException(e.getMessage());
+        } catch (UnsupportedOperationException e) {
+            throw new IllegalArgumentException(e.getMessage());
         } catch (Exception e) {
             throw new IllegalArgumentException("Error while creating binary mask! Select an image if none is selected!");
         }
