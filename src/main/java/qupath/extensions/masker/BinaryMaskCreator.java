@@ -132,7 +132,11 @@ public class BinaryMaskCreator implements PathCommand {
     }
 
     private double adaptiveDownSampling(ROI roi) {
-        if (roi.getBoundsWidth() > 60000 && roi.getBoundsHeight() > 60000) {
+        if (roi.getBoundsWidth() > 180000 && roi.getBoundsHeight() > 180000) {
+            return 64.0;
+        } else if (roi.getBoundsWidth() > 120000 && roi.getBoundsWidth() > 120000) {
+            return 32.0;
+        } else if (roi.getBoundsWidth() > 60000 && roi.getBoundsHeight() > 60000) {
             return 16.0;
         } else if (roi.getBoundsWidth() > 20000 && roi.getBoundsHeight() > 20000) {
             return 8.0;
