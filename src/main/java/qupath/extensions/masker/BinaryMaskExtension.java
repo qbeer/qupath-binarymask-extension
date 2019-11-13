@@ -16,13 +16,13 @@ public class BinaryMaskExtension implements QuPathExtension {
         QuPathGUI.addMenuItems(binaryMaskMenu,
                 QuPathGUI.createCommandAction(
                         new BinaryMaskCreator(),
-                        "Export annotations from current image (Ctrl + Alt + X)", null,
+                        "Export annotations from current image", null,
                         new KeyCodeCombination(KeyCode.X, KeyCombination.CONTROL_DOWN, KeyCombination.ALT_DOWN)));
 
         QuPathGUI.addMenuItems(binaryMaskMenu,
                 QuPathGUI.createCommandAction(
                         new LockAnnotations(),
-                        "Lock annotations on current image (Ctrl + Alt + S)", null,
+                        "Lock annotations on current image", null,
                         new KeyCodeCombination(KeyCode.S, KeyCombination.CONTROL_DOWN, KeyCombination.ALT_DOWN)));
 
         /*
