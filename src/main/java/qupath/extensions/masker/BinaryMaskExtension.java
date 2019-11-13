@@ -25,12 +25,11 @@ public class BinaryMaskExtension implements QuPathExtension {
                         "Lock annotations on current image", null,
                         new KeyCodeCombination(KeyCode.S, KeyCombination.CONTROL_DOWN, KeyCombination.ALT_DOWN)));
 
-        /*
         QuPathGUI.addMenuItems(binaryMaskMenu,
                 QuPathGUI.createCommandAction(
                         new LoadAnnotations(),
-                        "Load annotations"));
-         */
+                        "Load annotations", null,
+                        new KeyCodeCombination(KeyCode.L, KeyCombination.CONTROL_DOWN, KeyCombination.ALT_DOWN)));
     }
 
     @Override
