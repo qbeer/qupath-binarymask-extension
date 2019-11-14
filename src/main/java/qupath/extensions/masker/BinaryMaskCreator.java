@@ -1,7 +1,10 @@
 package qupath.extensions.masker;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import ch.qos.logback.classic.Logger;
+import ch.qos.logback.classic.LoggerContext;
+import ch.qos.logback.classic.encoder.PatternLayoutEncoder;
+import ch.qos.logback.core.FileAppender;
+import org.slf4j.LoggerFactory;
 import qupath.lib.gui.commands.interfaces.PathCommand;
 import qupath.lib.images.ImageData;
 import qupath.lib.images.servers.ImageServer;
@@ -24,7 +27,27 @@ import java.util.stream.Collectors;
 
 public class BinaryMaskCreator implements PathCommand {
 
-    protected static final Logger logger = LogManager.getRootLogger();
+    private LoggerContext loggerContext = (LoggerContext) LoggerFactory.getILoggerFactory();
+
+    BinaryMaskCreator() {
+        FileAppender fileAppender = new FileAppender();
+        fileAppender.setContext(loggerContext);
+        fileAppender.setName("debug-appender");
+        // set the file name
+        fileAppender.setFile(QPEx.PROJECT_BASE_DIR + "debug.log");
+
+        PatternLayoutEncoder encoder = new PatternLayoutEncoder();
+        encoder.setContext(loggerContext);
+        encoder.setPattern("%r %thread %level - %msg%n");
+        encoder.start();
+
+        fileAppender.setEncoder(encoder);
+        fileAppender.start();
+
+        // attach the rolling file appender to the logger of your choice
+        Logger logbackLogger = loggerContext.getLogger("root");
+        logbackLogger.addAppender(fileAppender);
+    }
 
     @Override
     public void run() {
@@ -35,7 +58,7 @@ public class BinaryMaskCreator implements PathCommand {
         } catch (UnsupportedOperationException e) {
             throw new IllegalArgumentException(e.getMessage());
         } catch (Exception e) {
-            logger.error("Error while creating a binary mask! Select an image if none is selected!");
+            loggerContext.getLogger("root").error("Error while creating a binary mask! Select an image if none is selected!");
             throw new IllegalArgumentException("Error while creating binary mask! Select an image if none is selected!");
         }
     }
@@ -68,7 +91,7 @@ public class BinaryMaskCreator implements PathCommand {
 
     private void checkForNoneTypeAnnotation(PathObject annotation) {
         if (Objects.isNull(annotation.getPathClass())) {
-            logger.error("There are annotations with no type!");
+            loggerContext.getLogger("root").error("There are annotations with no type!");
             throw new IllegalArgumentException("There are annotations with no type!");
         }
     }
@@ -110,7 +133,7 @@ public class BinaryMaskCreator implements PathCommand {
         try {
             ImageIO.write(imgMask, "PNG", fileMask);
         } catch (Exception e) {
-            logger.error("Could not write mask to file, image : " + server.getShortServerName() +
+            loggerContext.getLogger("root").error("Could not write mask to file, image : " + server.getShortServerName() +
                     " class name : " + classificationName + " whole name : " + name);
             throw new UnsupportedOperationException("Couldn't write fileMask." + name + "\t");
         }
@@ -119,7 +142,7 @@ public class BinaryMaskCreator implements PathCommand {
         try {
             ImageIO.write(imgMask, "PNG", currentMask);
         } catch (Exception e) {
-            logger.error("Could not write current mask to directory masks/latest! " + currentMask.getName());
+            loggerContext.getLogger("root").error("Could not write current mask to directory masks/latest! " + currentMask.getName());
             throw new UnsupportedOperationException(
                     "Couldn't write current mask to directory masks/latest.");
         }
@@ -135,7 +158,7 @@ public class BinaryMaskCreator implements PathCommand {
         }
         for (File match : matches) {
             if (!match.delete()) {
-                logger.error("Could not delete corresponding files from masks/latest directory.");
+                loggerContext.getLogger("root").error("Could not delete corresponding files from masks/latest directory.");
                 throw new UnsupportedOperationException("Couldn't delete corresponding files from masks/latest.");
             }
         }
