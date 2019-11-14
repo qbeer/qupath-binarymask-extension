@@ -31,7 +31,7 @@ public class LockAnnotations implements PathCommand {
         fileAppender.start();
 
         // attach the rolling file appender to the logger of your choice
-        Logger logbackLogger = loggerContext.getLogger("root");
+        Logger logbackLogger = loggerContext.getLogger("binaryMaskLogger");
         logbackLogger.addAppender(fileAppender);
     }
 
@@ -41,7 +41,7 @@ public class LockAnnotations implements PathCommand {
             PathObjectHierarchy hierarchy = QPEx.getCurrentImageData().getHierarchy();
             hierarchy.getFlattenedObjectList(null).stream().filter(PathObject::isAnnotation).forEach(annotation -> ((PathAnnotationObject) annotation).setLocked(true));
         } catch (Exception e) {
-            loggerContext.getLogger("root").error("Error while locking annotations! Please select an image!\t" + e.getMessage());
+            loggerContext.getLogger("binaryMaskLogger").error("Error while locking annotations! Please select an image!\t" + e.getMessage());
             throw new IllegalArgumentException("Error while locking annotations! Please select an image!");
         }
     }
