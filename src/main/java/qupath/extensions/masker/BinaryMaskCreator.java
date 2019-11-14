@@ -24,7 +24,7 @@ import java.util.stream.Collectors;
 
 public class BinaryMaskCreator implements PathCommand {
 
-    protected static final Logger logger = LogManager.getLogger();
+    protected static final Logger logger = LogManager.getRootLogger();
 
     @Override
     public void run() {

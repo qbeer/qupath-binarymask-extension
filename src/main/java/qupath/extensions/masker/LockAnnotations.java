@@ -10,7 +10,7 @@ import qupath.lib.scripting.QPEx;
 
 public class LockAnnotations implements PathCommand {
 
-    protected static final Logger logger = LogManager.getLogger();
+    protected static final Logger logger = LogManager.getRootLogger();
 
     @Override
     public void run() {
