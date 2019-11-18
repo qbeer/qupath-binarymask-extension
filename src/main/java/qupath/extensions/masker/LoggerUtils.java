@@ -10,13 +10,13 @@ import org.slf4j.LoggerFactory;
 
 import static java.util.Objects.isNull;
 
-public class Loggerutils {
+class LoggerUtils {
 
     private static Logger LOGGER = null;
 
-    public static Logger getLOGGER(String string, String file) {
+    static Logger getLOGGER(String string, String file) {
 
-        if (isNull(Loggerutils.LOGGER)) {
+        if (isNull(LoggerUtils.LOGGER)) {
 
             LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
             PatternLayoutEncoder ple = new PatternLayoutEncoder();
@@ -30,16 +30,16 @@ public class Loggerutils {
             fileAppender.setContext(lc);
             fileAppender.start();
 
-            Logger logger = (Logger) LoggerFactory.getLogger(string);
+            Logger logger = (Logger) LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME);
             logger.addAppender(fileAppender);
-            logger.setLevel(Level.DEBUG);
-            logger.setAdditive(false); /* set to true if root should log too */
+            logger.setLevel(Level.INFO);
+            logger.setAdditive(true); /* set to true if root should log too */
 
-            Loggerutils.LOGGER = logger;
+            LoggerUtils.LOGGER = logger;
 
         }
 
-        return Loggerutils.LOGGER;
+        return LoggerUtils.LOGGER;
     }
 
 }
