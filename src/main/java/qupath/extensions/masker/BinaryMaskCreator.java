@@ -1,5 +1,6 @@
 package qupath.extensions.masker;
 
+import org.slf4j.Logger;
 import qupath.lib.gui.commands.interfaces.PathCommand;
 import qupath.lib.images.ImageData;
 import qupath.lib.images.servers.ImageServer;
@@ -22,7 +23,12 @@ import java.util.stream.Collectors;
 
 public class BinaryMaskCreator implements PathCommand {
 
+    final File f = new File(BinaryMaskCreator.class.getProtectionDomain().getCodeSource().getLocation().getPath());
+    private Logger logger = LoggerUtils.getLOGGER("binaryMaskLogger",
+            f.getAbsolutePath().replace(f.getName(), "") + "debug.log");
+
     @Override
+
     public void run() {
         try {
             createBinaryMask();

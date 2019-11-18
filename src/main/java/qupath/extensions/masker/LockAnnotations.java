@@ -1,5 +1,6 @@
 package qupath.extensions.masker;
 
+import org.slf4j.Logger;
 import qupath.lib.gui.commands.interfaces.PathCommand;
 import qupath.lib.objects.PathAnnotationObject;
 import qupath.lib.objects.PathObject;
@@ -7,6 +8,9 @@ import qupath.lib.objects.hierarchy.PathObjectHierarchy;
 import qupath.lib.scripting.QPEx;
 
 public class LockAnnotations implements PathCommand {
+
+    private static Logger logger = LoggerUtils.getLOGGER("", ""); // logger is already defined here
+
     @Override
     public void run() {
         try {
