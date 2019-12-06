@@ -23,9 +23,7 @@ import java.util.stream.Collectors;
 
 public class BinaryMaskCreator implements PathCommand {
 
-    final File f = new File(BinaryMaskCreator.class.getProtectionDomain().getCodeSource().getLocation().getPath());
-    private Logger logger = LoggerUtils.getLOGGER("binaryMaskLogger",
-            f.getAbsolutePath().replace(f.getName(), "") + "debug.log");
+    private static Logger logger = LoggerUtils.getLOGGER("", ""); // logger is already defined here
 
     @Override
     public void run() {

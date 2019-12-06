@@ -21,7 +21,6 @@ import qupath.lib.scripting.QPEx;
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -29,9 +28,7 @@ import java.util.Objects;
 
 public class LoadAnnotations implements PathCommand {
 
-    final File f = new File(BinaryMaskCreator.class.getProtectionDomain().getCodeSource().getLocation().getPath());
-    private Logger logger = LoggerUtils.getLOGGER("binaryMaskLogger",
-            f.getAbsolutePath().replace(f.getName(), "") + "debug.log");
+    private static Logger logger = LoggerUtils.getLOGGER("", ""); // logger is already defined here
 
     // Highgrade dysplasia must be before dyspalsia!
     private static List<String> classNames = Arrays.asList("highgrade_dysplasia", "inflammation", "dysplasia",
@@ -43,8 +40,10 @@ public class LoadAnnotations implements PathCommand {
         try {
             loadAnnotationsFromMaskFilesInLatestDir();
         } catch (IllegalArgumentException e) {
+            logger.error(e.getMessage());
             throw new IllegalArgumentException("Illegal argument exception : " + e.getMessage());
         } catch (Exception e) {
+            logger.error(e.getMessage());
             throw new IllegalArgumentException("Please select and image that has save masks!" + e.getMessage());
         }
     }

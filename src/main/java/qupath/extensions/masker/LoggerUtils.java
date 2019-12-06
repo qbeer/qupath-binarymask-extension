@@ -31,6 +31,7 @@ class LoggerUtils {
             fileAppender.start();
 
             Logger logger = (Logger) LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME);
+            logger.detachAndStopAllAppenders();
             logger.addAppender(fileAppender);
             logger.setLevel(Level.INFO);
             logger.setAdditive(true); /* set to true if root should log too */

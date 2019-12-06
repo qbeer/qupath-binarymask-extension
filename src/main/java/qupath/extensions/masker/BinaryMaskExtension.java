@@ -4,13 +4,21 @@ import javafx.scene.control.Menu;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyCombination;
+import org.slf4j.Logger;
 import qupath.lib.gui.QuPathGUI;
 import qupath.lib.gui.extensions.QuPathExtension;
+
+import java.io.File;
 
 public class BinaryMaskExtension implements QuPathExtension {
 
     @Override
     public void installExtension(QuPathGUI quPath) {
+
+        final File f = new File(BinaryMaskExtension.class.getProtectionDomain().getCodeSource().getLocation().getPath());
+        Logger logger = LoggerUtils.getLOGGER("binaryMaskLogger",
+                f.getAbsolutePath().replace(f.getName(), "") + "debug.log");
+
         Menu binaryMaskMenu = quPath.getMenu("CsabaiBio tools", true);
 
         QuPathGUI.addMenuItems(binaryMaskMenu,
