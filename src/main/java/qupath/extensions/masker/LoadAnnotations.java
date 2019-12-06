@@ -5,6 +5,7 @@ import ij.measure.Calibration;
 import ij.plugin.filter.ThresholdToSelection;
 import ij.process.ByteProcessor;
 import ij.process.ImageProcessor;
+import org.slf4j.Logger;
 import qupath.imagej.objects.ROIConverterIJ;
 import qupath.lib.gui.commands.interfaces.PathCommand;
 import qupath.lib.images.ImageData;
@@ -25,6 +26,9 @@ import java.util.List;
 import java.util.Objects;
 
 public class LoadAnnotations implements PathCommand {
+
+    private static Logger logger = LoggerUtils.getLOGGER("", ""); // logger is already defined here
+
     @Override
     public void run() {
         try {
