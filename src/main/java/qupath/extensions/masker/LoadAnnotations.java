@@ -21,13 +21,22 @@ import qupath.lib.scripting.QPEx;
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
 public class LoadAnnotations implements PathCommand {
 
-    private static Logger logger = LoggerUtils.getLOGGER("", ""); // logger is already defined here
+    final File f = new File(BinaryMaskCreator.class.getProtectionDomain().getCodeSource().getLocation().getPath());
+    private Logger logger = LoggerUtils.getLOGGER("binaryMaskLogger",
+            f.getAbsolutePath().replace(f.getName(), "") + "debug.log");
+
+    // Highgrade dysplasia must be before dyspalsia!
+    private static List<String> classNames = Arrays.asList("highgrade_dysplasia", "inflammation", "dysplasia",
+            "resection_edge", "adenocarcinoma", "suspicious_for_invasion",
+            "tumor_necrosis", "lymphovascular_invasion", "artifact", "annotated");
 
     @Override
     public void run() {
@@ -82,16 +91,24 @@ public class LoadAnnotations implements PathCommand {
 
         // Remove a "_" with the image name to not split
         // an empty string for the first part.
-        String[] parts = file.getName()
+        String classificationNameAndLocation = file.getName()
                 .replace(imageName + "_", "")
-                .replace("-mask.png", "")
-                .split("_");
+                .replace("-mask.png", "");
 
         // Classification name
-        String classificationString = parts[0];
+        String classificationString = null;
+        String location = null;
+
+        for (String className : classNames) {
+            if (classificationNameAndLocation.contains(className)) {
+                classificationString = className;
+                location = classificationNameAndLocation.replace(className + "_", "");
+                break;
+            }
+        }
 
         // The format is (downSample, x, y, boundingWidth, boundingHeight)
-        String regionString = parts[1].replace("(", "").replace(")", "");
+        String regionString = location.replace("(", "").replace(")", "");
         String[] regionParts = regionString.split(",");
 
         double downSample = Double.parseDouble(regionParts[0]);

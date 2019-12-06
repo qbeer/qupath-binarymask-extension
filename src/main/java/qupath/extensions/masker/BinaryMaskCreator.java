@@ -28,7 +28,6 @@ public class BinaryMaskCreator implements PathCommand {
             f.getAbsolutePath().replace(f.getName(), "") + "debug.log");
 
     @Override
-
     public void run() {
         try {
             createBinaryMask();
