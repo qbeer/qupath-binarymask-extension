@@ -31,7 +31,7 @@ public class LoadAnnotations implements PathCommand {
     private static Logger logger = LoggerUtils.getLOGGER("", ""); // logger is already defined here
 
     // Highgrade dysplasia must be before dyspalsia!
-    private static List<String> classNames = Arrays.asList("highgrade_dysplasia", "inflammation", "dysplasia",
+    private static List<String> classNames = Arrays.asList("highgrade_dysplasia", "inflammation", "lowgrade_dysplasia",
             "resection_edge", "adenocarcinoma", "suspicious_for_invasion",
             "tumor_necrosis", "lymphovascular_invasion", "artifact", "annotated");
 
