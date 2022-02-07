@@ -35,6 +35,12 @@ public class BinaryMaskExtension implements QuPathExtension {
 
         QuPathGUI.addMenuItems(binaryMaskMenu,
                 QuPathGUI.createCommandAction(
+                        new UnlockAnnotations(),
+                        "Unlock annotations on current image", null,
+                        new KeyCodeCombination(KeyCode.E, KeyCombination.CONTROL_DOWN, KeyCombination.ALT_DOWN)));
+
+        QuPathGUI.addMenuItems(binaryMaskMenu,
+                QuPathGUI.createCommandAction(
                         new LoadAnnotations(),
                         "Load annotations", null,
                         new KeyCodeCombination(KeyCode.L, KeyCombination.CONTROL_DOWN, KeyCombination.ALT_DOWN)));
@@ -42,7 +48,7 @@ public class BinaryMaskExtension implements QuPathExtension {
 
     @Override
     public String getName() {
-        return "CsabaiBio tools for SOTE-ELTE collaboration";
+        return "csabAIbio tools for SOTE-ELTE collaboration";
     }
 
     @Override
