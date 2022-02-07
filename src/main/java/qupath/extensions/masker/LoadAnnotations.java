@@ -31,7 +31,7 @@ public class LoadAnnotations implements PathCommand {
     private static Logger logger = LoggerUtils.getLOGGER("", ""); // logger is already defined here
 
     // Highgrade dysplasia must be before dyspalsia!
-    private static List<String> classNames = Arrays.asList("highgrade_dysplasia", "inflammation", "dysplasia",
+    private static List<String> classNames = Arrays.asList("highgrade_dysplasia", "inflammation", "lowgrade_dysplasia",
             "resection_edge", "adenocarcinoma", "suspicious_for_invasion",
             "tumor_necrosis", "lymphovascular_invasion", "artifact", "annotated");
 
@@ -64,7 +64,7 @@ public class LoadAnnotations implements PathCommand {
         List<File> filteredFiles = new ArrayList<>();
         File[] files = Objects.nonNull(directoryOfMasks.listFiles()) ? directoryOfMasks.listFiles() : new File[]{};
         for (File file : files) {
-            if (file.isFile() && file.getName().startsWith(correspondingMaskName) && file
+            if (file.isFile() && (file.getName().split("__", -1)[0].equals(correspondingMaskName)) && file
                     .getName()
                     .endsWith("-mask.png")) {
                 filteredFiles.add(file);
@@ -91,7 +91,7 @@ public class LoadAnnotations implements PathCommand {
         // Remove a "_" with the image name to not split
         // an empty string for the first part.
         String classificationNameAndLocation = file.getName()
-                .replace(imageName + "_", "")
+                .replace(imageName + "__", "")
                 .replace("-mask.png", "");
 
         // Classification name
@@ -101,7 +101,7 @@ public class LoadAnnotations implements PathCommand {
         for (String className : classNames) {
             if (classificationNameAndLocation.contains(className)) {
                 classificationString = className;
-                location = classificationNameAndLocation.replace(className + "_", "");
+                location = classificationNameAndLocation.replace(className + "__", "");
                 break;
             }
         }
