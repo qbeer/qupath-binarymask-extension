@@ -9,7 +9,7 @@ import qupath.lib.scripting.QPEx;
 
 import java.io.File;
 
-public class LockAnnotations implements PathCommand {
+public class UnlockAnnotations implements PathCommand {
 
     private final File f = new File(BinaryMaskCreator.class.getProtectionDomain().getCodeSource().getLocation().getPath());
     private Logger logger = LoggerUtils.getLOGGER(f.getAbsolutePath().replace(f.getName(), "") + "debug.log");
@@ -18,10 +18,10 @@ public class LockAnnotations implements PathCommand {
     public void run() {
         try {
             PathObjectHierarchy hierarchy = QPEx.getCurrentImageData().getHierarchy();
-            hierarchy.getFlattenedObjectList(null).stream().filter(PathObject::isAnnotation).forEach(annotation -> ((PathAnnotationObject) annotation).setLocked(true));
+            hierarchy.getFlattenedObjectList(null).stream().filter(PathObject::isAnnotation).forEach(annotation -> ((PathAnnotationObject) annotation).setLocked(false));
         } catch (Exception e) {
-            logger.error("Error while locking annotations! Please select an image!");
-            throw new IllegalArgumentException("Error while locking annotations! Please select an image!");
+            logger.error("Error while unlocking annotations! Please select an image!");
+            throw new IllegalArgumentException("Error while unlocking annotations! Please select an image!");
         }
     }
 }

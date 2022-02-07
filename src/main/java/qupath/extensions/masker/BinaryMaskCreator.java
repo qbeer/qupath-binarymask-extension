@@ -23,18 +23,14 @@ import java.util.stream.Collectors;
 
 public class BinaryMaskCreator implements PathCommand {
 
-    final File f = new File(BinaryMaskCreator.class.getProtectionDomain().getCodeSource().getLocation().getPath());
-    private Logger logger = LoggerUtils.getLOGGER("binaryMaskLogger",
-            f.getAbsolutePath().replace(f.getName(), "") + "debug.log");
+    private final File f = new File(BinaryMaskCreator.class.getProtectionDomain().getCodeSource().getLocation().getPath());
+    private Logger logger = LoggerUtils.getLOGGER(f.getAbsolutePath().replace(f.getName(), "") + "debug.log");
 
     @Override
     public void run() {
         try {
             createBinaryMask();
         } catch (IllegalArgumentException e) {
-            logger.error(e.getMessage());
-            throw new IllegalArgumentException(e.getMessage());
-        } catch (UnsupportedOperationException e) {
             logger.error(e.getMessage());
             throw new IllegalArgumentException(e.getMessage());
         } catch (Exception e) {

@@ -14,7 +14,7 @@ class LoggerUtils {
 
     private static Logger LOGGER = null;
 
-    static Logger getLOGGER(String string, String file) {
+    static Logger getLOGGER(String file) {
 
         if (isNull(LoggerUtils.LOGGER)) {
 
@@ -31,6 +31,7 @@ class LoggerUtils {
             fileAppender.start();
 
             Logger logger = (Logger) LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME);
+            logger.detachAndStopAllAppenders();
             logger.addAppender(fileAppender);
             logger.setLevel(Level.INFO);
             logger.setAdditive(true); /* set to true if root should log too */
