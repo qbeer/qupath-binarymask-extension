@@ -28,7 +28,8 @@ import java.util.Objects;
 
 public class LoadAnnotations implements PathCommand {
 
-    private static Logger logger = LoggerUtils.getLOGGER("", ""); // logger is already defined here
+    private final File f = new File(BinaryMaskCreator.class.getProtectionDomain().getCodeSource().getLocation().getPath());
+    private Logger logger = LoggerUtils.getLOGGER(f.getAbsolutePath().replace(f.getName(), "") + "debug.log");
 
     // Highgrade dysplasia must be before dyspalsia!
     private static List<String> classNames = Arrays.asList("highgrade_dysplasia", "inflammation", "lowgrade_dysplasia",

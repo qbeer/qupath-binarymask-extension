@@ -14,7 +14,7 @@ class LoggerUtils {
 
     private static Logger LOGGER = null;
 
-    static Logger getLOGGER(String string, String file) {
+    static Logger getLOGGER(String file) {
 
         if (isNull(LoggerUtils.LOGGER)) {
 

@@ -29,6 +29,10 @@ dependencies {
     compile 'com.github.qupath.qupath:qupath-core-awt:v0.1.2'
     compile 'com.github.qupath.qupath:qupath-gui-fx:v0.1.2'
     compile 'com.github.qupath.qupath:qupath-processing-ij:v0.1.2'
+
+    compile group: 'org.slf4j', name: 'slf4j-api', version: '1.7.+'
+    compile group: 'ch.qos.logback', name: 'logback-classic', version: '1.+'
+
     compile 'net.imagej:ij:1.52k'
     testCompile group: 'junit', name: 'junit', version: '4.12'
 }

@@ -7,9 +7,12 @@ import qupath.lib.objects.PathObject;
 import qupath.lib.objects.hierarchy.PathObjectHierarchy;
 import qupath.lib.scripting.QPEx;
 
+import java.io.File;
+
 public class UnlockAnnotations implements PathCommand {
 
-    private static Logger logger = LoggerUtils.getLOGGER("", ""); // logger is already defined here
+    private final File f = new File(BinaryMaskCreator.class.getProtectionDomain().getCodeSource().getLocation().getPath());
+    private Logger logger = LoggerUtils.getLOGGER(f.getAbsolutePath().replace(f.getName(), "") + "debug.log");
 
     @Override
     public void run() {

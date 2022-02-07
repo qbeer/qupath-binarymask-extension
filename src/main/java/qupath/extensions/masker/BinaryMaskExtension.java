@@ -16,10 +16,9 @@ public class BinaryMaskExtension implements QuPathExtension {
     public void installExtension(QuPathGUI quPath) {
 
         final File f = new File(BinaryMaskExtension.class.getProtectionDomain().getCodeSource().getLocation().getPath());
-        Logger logger = LoggerUtils.getLOGGER("binaryMaskLogger",
-                f.getAbsolutePath().replace(f.getName(), "") + "debug.log");
+        Logger logger = LoggerUtils.getLOGGER(f.getAbsolutePath().replace(f.getName(), "") + "debug.log");
 
-        Menu binaryMaskMenu = quPath.getMenu("CsabaiBio tools", true);
+        Menu binaryMaskMenu = quPath.getMenu("csabAIbio tools", true);
 
         QuPathGUI.addMenuItems(binaryMaskMenu,
                 QuPathGUI.createCommandAction(

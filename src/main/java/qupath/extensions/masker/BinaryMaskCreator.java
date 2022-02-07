@@ -23,17 +23,18 @@ import java.util.stream.Collectors;
 
 public class BinaryMaskCreator implements PathCommand {
 
-    private static Logger logger = LoggerUtils.getLOGGER("", ""); // logger is already defined here
+    private final File f = new File(BinaryMaskCreator.class.getProtectionDomain().getCodeSource().getLocation().getPath());
+    private Logger logger = LoggerUtils.getLOGGER(f.getAbsolutePath().replace(f.getName(), "") + "debug.log");
 
     @Override
     public void run() {
         try {
             createBinaryMask();
         } catch (IllegalArgumentException e) {
-            throw new IllegalArgumentException(e.getMessage());
-        } catch (UnsupportedOperationException e) {
+            logger.error(e.getMessage());
             throw new IllegalArgumentException(e.getMessage());
         } catch (Exception e) {
+            logger.error("Error while creating a binary mask! Select an image if none is selected!");
             throw new IllegalArgumentException("Error while creating binary mask! Select an image if none is selected!");
         }
     }
@@ -66,6 +67,7 @@ public class BinaryMaskCreator implements PathCommand {
 
     private void checkForNoneTypeAnnotation(PathObject annotation) {
         if (Objects.isNull(annotation.getPathClass())) {
+            logger.error("There are annotations with no type!");
             throw new IllegalArgumentException("There are annotations with no type!");
         }
     }
@@ -107,6 +109,8 @@ public class BinaryMaskCreator implements PathCommand {
         try {
             ImageIO.write(imgMask, "PNG", fileMask);
         } catch (Exception e) {
+            logger.error("Could not write mask to file, image : " + server.getShortServerName() +
+                    " class name : " + classificationName + " whole name : " + name);
             throw new UnsupportedOperationException("Couldn't write fileMask." + name + "\t");
         }
 
@@ -114,6 +118,7 @@ public class BinaryMaskCreator implements PathCommand {
         try {
             ImageIO.write(imgMask, "PNG", currentMask);
         } catch (Exception e) {
+            logger.error("Could not write current mask to directory masks/latest! " + currentMask.getName());
             throw new UnsupportedOperationException(
                     "Couldn't write current mask to directory masks/latest.");
         }
@@ -129,6 +134,7 @@ public class BinaryMaskCreator implements PathCommand {
         }
         for (File match : matches) {
             if (!match.delete()) {
+                logger.error("Could not delete corresponding files from masks/latest directory.");
                 throw new UnsupportedOperationException("Couldn't delete corresponding files from masks/latest.");
             }
         }
